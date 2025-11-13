@@ -63,11 +63,13 @@ jobs:
   create-installer:
     needs: build
     runs-on: windows-latest
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Download Build Artifact
       uses: actions/download-artifact@v4
@@ -78,47 +80,95 @@ jobs:
     - name: Verify Downloaded Artifact
       run: |
         Write-Host "=== Downloaded Artifacts ===" -ForegroundColor Cyan
-        Get-ChildItem -Path Release -Recurse | Format-Table Name, Length
+        if (Test-Path "Release") {
+          Get-ChildItem -Path Release -Recurse | Format-Table Name, Length
+        }
         if (Test-Path "Release/L2Setup.exe") {
           Write-Host "✅ L2Setup.exe downloaded successfully!" -ForegroundColor Green
+          $size = (Get-Item "Release/L2Setup.exe").Length / 1MB
+          Write-Host "Size: $([math]::Round($size, 2)) MB" -ForegroundColor Yellow
         } else {
           Write-Host "❌ L2Setup.exe NOT FOUND after download!" -ForegroundColor Red
+          Write-Host "Contents of Release directory:" -ForegroundColor Yellow
+          if (Test-Path "Release") {
+            Get-ChildItem -Path Release -Recurse | Format-List
+          }
           exit 1
         }
 
+    - name: Setup Chocolatey
+      shell: pwsh
+      run: |
+        Write-Host "Setting up Chocolatey..." -ForegroundColor Cyan
+        Set-ExecutionPolicy Bypass -Scope Process -Force
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+        if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+          Write-Host "Installing Chocolatey..." -ForegroundColor Yellow
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        }
+        choco --version
+
     - name: Setup Inno Setup
+      shell: pwsh
       run: |
         Write-Host "Installing Inno Setup 6..." -ForegroundColor Cyan
         choco install innosetup -y --version=6.2.2
-        Write-Host "Inno Setup installed!" -ForegroundColor Green
-
-    - name: Create Installer
-      run: |
-        $isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-        if (-not (Test-Path $isccPath)) {
-          Write-Host "❌ ISCC.exe not found at $isccPath" -ForegroundColor Red
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "❌ Failed to install Inno Setup" -ForegroundColor Red
           exit 1
         }
+        Write-Host "✅ Inno Setup installed!" -ForegroundColor Green
+
+    - name: Verify Inno Setup Installation
+      shell: pwsh
+      run: |
+        $isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+        if (Test-Path $isccPath) {
+          Write-Host "✅ ISCC.exe found at $isccPath" -ForegroundColor Green
+          & $isccPath /?
+        } else {
+          Write-Host "❌ ISCC.exe not found at $isccPath" -ForegroundColor Red
+          Write-Host "Searching for ISCC.exe..." -ForegroundColor Yellow
+          Get-ChildItem -Path "C:\Program Files*" -Filter "ISCC.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName
+          exit 1
+        }
+
+    - name: Create Installer
+      shell: pwsh
+      run: |
+        $isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
         Write-Host "Creating installer with Inno Setup..." -ForegroundColor Cyan
+        Write-Host "Working directory: $(Get-Location)" -ForegroundColor Yellow
+        Write-Host "Setup.iss exists: $(Test-Path 'setup.iss')" -ForegroundColor Yellow
+        Write-Host "Release/L2Setup.exe exists: $(Test-Path 'Release/L2Setup.exe')" -ForegroundColor Yellow
+        
         & $isccPath setup.iss
-        if ($LASTEXITCODE -ne 0) {
-          Write-Host "❌ Installer creation failed with exit code $LASTEXITCODE" -ForegroundColor Red
+        $exitCode = $LASTEXITCODE
+        if ($exitCode -ne 0) {
+          Write-Host "❌ Installer creation failed with exit code $exitCode" -ForegroundColor Red
           exit 1
         }
         Write-Host "✅ Installer created successfully!" -ForegroundColor Green
 
     - name: Verify Installer Output
+      shell: pwsh
       run: |
-        Write-Host "=== Installer Output ===" -ForegroundColor Cyan
+        Write-Host "=== Installer Output Verification ===" -ForegroundColor Cyan
+        Write-Host "Checking Release directory..." -ForegroundColor Yellow
         if (Test-Path "Release") {
-          Get-ChildItem -Path Release -Filter "*.exe" | Format-Table Name, Length
+          Write-Host "Release directory contents:" -ForegroundColor Cyan
+          Get-ChildItem -Path Release -Filter "*.exe" | Format-Table Name, Length, LastWriteTime
+          
           $installer = Get-ChildItem -Path Release -Filter "L2Setup-Installer.exe" | Select-Object -First 1
           if ($installer) {
             Write-Host "✅ Installer found: $($installer.Name)" -ForegroundColor Green
             $size = $installer.Length / 1MB
             Write-Host "Size: $([math]::Round($size, 2)) MB" -ForegroundColor Yellow
+            Write-Host "Full path: $($installer.FullName)" -ForegroundColor Cyan
           } else {
-            Write-Host "❌ L2Setup-Installer.exe NOT FOUND!" -ForegroundColor Red
+            Write-Host "❌ L2Setup-Installer.exe NOT FOUND in Release directory!" -ForegroundColor Red
+            Write-Host "Available .exe files:" -ForegroundColor Yellow
+            Get-ChildItem -Path Release -Filter "*.exe" | Format-List Name, FullName
             exit 1
           }
         } else {
@@ -135,13 +185,35 @@ jobs:
         retention-days: 90
 
   create-release:
-    needs: create-installer
+    needs: [build, create-installer]
     runs-on: windows-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/')
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Verify Tag
+      shell: pwsh
+      run: |
+        $tag = "${{ github.ref_name }}"
+        Write-Host "Tag: $tag" -ForegroundColor Cyan
+        Write-Host "Ref: ${{ github.ref }}" -ForegroundColor Cyan
+        
+        # Check if tag exists locally
+        git fetch --tags
+        $tags = git tag -l
+        Write-Host "Available tags:" -ForegroundColor Yellow
+        $tags | ForEach-Object { Write-Host "  - $_" }
+        
+        if ($tags -contains $tag) {
+          Write-Host "✅ Tag $tag exists" -ForegroundColor Green
+        } else {
+          Write-Host "⚠️  Tag $tag not found in local repository" -ForegroundColor Yellow
+          Write-Host "This might be normal if the tag was just pushed" -ForegroundColor Yellow
+        }
 
     - name: Download Executable Artifact
       uses: actions/download-artifact@v4
@@ -155,21 +227,60 @@ jobs:
         name: L2Setup-Installer
         path: artifacts/installer
 
+    - name: Verify Downloaded Artifacts
+      shell: pwsh
+      run: |
+        Write-Host "=== Verifying Downloaded Artifacts ===" -ForegroundColor Cyan
+        
+        if (Test-Path "artifacts/executable/L2Setup.exe") {
+          $size = (Get-Item "artifacts/executable/L2Setup.exe").Length / 1MB
+          Write-Host "✅ Executable found: $([math]::Round($size, 2)) MB" -ForegroundColor Green
+        } else {
+          Write-Host "❌ Executable NOT FOUND!" -ForegroundColor Red
+          exit 1
+        }
+        
+        if (Test-Path "artifacts/installer/L2Setup-Installer.exe") {
+          $size = (Get-Item "artifacts/installer/L2Setup-Installer.exe").Length / 1MB
+          Write-Host "✅ Installer found: $([math]::Round($size, 2)) MB" -ForegroundColor Green
+        } else {
+          Write-Host "❌ Installer NOT FOUND!" -ForegroundColor Red
+          Write-Host "Contents of artifacts/installer:" -ForegroundColor Yellow
+          if (Test-Path "artifacts/installer") {
+            Get-ChildItem -Path "artifacts/installer" -Recurse | Format-List
+          }
+          exit 1
+        }
+
     - name: Prepare Release Assets
+      shell: pwsh
       run: |
         Write-Host "=== Preparing Release Assets ===" -ForegroundColor Cyan
-        New-Item -ItemType Directory -Force -Path release-assets
+        New-Item -ItemType Directory -Force -Path release-assets | Out-Null
         
         # Copy and rename with version
         $version = "${{ github.ref_name }}"
-        Copy-Item "artifacts/executable/L2Setup.exe" "release-assets/L2Setup-$version.exe"
-        Copy-Item "artifacts/installer/L2Setup-Installer.exe" "release-assets/L2Setup-Installer-$version.exe"
+        Write-Host "Version: $version" -ForegroundColor Cyan
+        
+        Copy-Item "artifacts/executable/L2Setup.exe" "release-assets/L2Setup-$version.exe" -Force
+        Copy-Item "artifacts/installer/L2Setup-Installer.exe" "release-assets/L2Setup-Installer-$version.exe" -Force
         
         Write-Host "✅ Release assets prepared:" -ForegroundColor Green
-        Get-ChildItem -Path release-assets | Format-Table Name, Length
+        Get-ChildItem -Path release-assets | Format-Table Name, Length, LastWriteTime
+        
+        # Verify files exist
+        if (-not (Test-Path "release-assets/L2Setup-$version.exe")) {
+          Write-Host "❌ Failed to copy executable!" -ForegroundColor Red
+          exit 1
+        }
+        if (-not (Test-Path "release-assets/L2Setup-Installer-$version.exe")) {
+          Write-Host "❌ Failed to copy installer!" -ForegroundColor Red
+          exit 1
+        }
 
     - name: Get Version
       id: version
+      shell: pwsh
       run: |
         $version = "${{ github.ref_name }}" -replace '^v', ''
         echo "VERSION=$version" >> $env:GITHUB_OUTPUT
@@ -276,8 +387,9 @@ jobs:
         body_path: release-notes.md
         draft: false
         prerelease: false
-        generate_release_notes: true
+        generate_release_notes: false
         name: "L2 Setup ${{ github.ref_name }}"
+        tag_name: ${{ github.ref_name }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

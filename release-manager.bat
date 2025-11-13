@@ -822,16 +822,39 @@ if /i not "%confirm%"=="Y" (
 )
 
 echo.
-echo 🏷️  Creating tag...
-call :LOG "Creating tag: %tag_version%"
-git tag -a "%tag_version%" -m "%tag_message%"
-if errorlevel 1 (
-    call :LOG "ERROR: Failed to create tag"
-    echo ❌ Failed to create tag!
-    pause
-    goto MENU
+
+:: Check if tag already exists locally
+echo 🔍 Checking if tag already exists...
+git fetch --tags >nul 2>&1
+git tag -l | findstr /C:"%tag_version%" >nul
+if !errorlevel! equ 0 (
+    call :LOG "WARNING: Tag %tag_version% already exists locally"
+    echo ⚠️  Tag '%tag_version%' already exists locally!
+    echo.
+    set /p use_existing="Use existing tag? (Y/N): "
+    if /i not "!use_existing!"=="Y" (
+        echo ❌ Tag creation cancelled.
+        pause
+        goto MENU
+    )
+    echo    ✅ Using existing tag
+) else (
+    echo 🏷️  Creating tag...
+    call :LOG "Creating tag: %tag_version%"
+    git tag -a "%tag_version%" -m "%tag_message%"
+    if errorlevel 1 (
+        call :LOG "ERROR: Failed to create tag"
+        echo ❌ Failed to create tag!
+        echo.
+        echo 💡 Possible reasons:
+        echo    • Tag already exists
+        echo    • Invalid tag name
+        echo.
+        pause
+        goto MENU
+    )
+    echo    ✅ Tag created
 )
-echo    ✅ Tag created
 echo.
 
 echo 📤 Pushing tag to GitHub...
@@ -1056,21 +1079,39 @@ if /i not "%confirm%"=="Y" (
 echo.
 echo ════════════════════════════════════════════════════════════
 echo.
-echo 🏷️  Creating tag...
-call :LOG "Creating tag: %tag_version%"
-git tag -a "%tag_version%" -m "%tag_message%"
-if errorlevel 1 (
-    call :LOG "ERROR: Failed to create tag"
-    echo ❌ Failed to create tag!
+
+:: Check if tag already exists locally
+echo 🔍 Checking if tag already exists...
+git fetch --tags >nul 2>&1
+git tag -l | findstr /C:"%tag_version%" >nul
+if !errorlevel! equ 0 (
+    call :LOG "WARNING: Tag %tag_version% already exists locally"
+    echo ⚠️  Tag '%tag_version%' already exists locally!
     echo.
-    echo 💡 Possible reasons:
-    echo    • Tag already exists
-    echo    • Invalid tag name
-    echo.
-    pause
-    goto MENU
+    set /p use_existing="Use existing tag? (Y/N): "
+    if /i not "!use_existing!"=="Y" (
+        echo ❌ Tag creation cancelled.
+        pause
+        goto MENU
+    )
+    echo    ✅ Using existing tag
+) else (
+    echo 🏷️  Creating tag...
+    call :LOG "Creating tag: %tag_version%"
+    git tag -a "%tag_version%" -m "%tag_message%"
+    if errorlevel 1 (
+        call :LOG "ERROR: Failed to create tag"
+        echo ❌ Failed to create tag!
+        echo.
+        echo 💡 Possible reasons:
+        echo    • Tag already exists
+        echo    • Invalid tag name
+        echo.
+        pause
+        goto MENU
+    )
+    echo    ✅ Tag created locally
 )
-echo    ✅ Tag created locally
 echo.
 
 echo 📤 Pushing tag to GitHub...
