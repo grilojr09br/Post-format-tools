@@ -1,12 +1,14 @@
-# 🚀 Windows Post-Format Setup Tool
+# 🚀 L2 Setup
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)
 
+**All-in-One Windows Post-Format Automation by L2**
+
 ## 📋 Sobre
 
-Ferramenta completa de automação para configuração pós-formatação do Windows. Economize horas instalando ferramentas, restaurando perfis de navegador e otimizando o sistema com apenas alguns cliques!
+**L2 Setup** é uma ferramenta completa de automação para configuração pós-formatação do Windows. Economize horas instalando ferramentas, restaurando perfis de navegador e otimizando o sistema com apenas alguns cliques!
 
 **⚠️ IMPORTANTE:** Use ANTES de formatar para fazer backup e DEPOIS para restaurar e configurar tudo automaticamente!
 
@@ -24,278 +26,287 @@ Ferramenta completa de automação para configuração pós-formatação do Wind
 - ✅ **Configurar Brave como navegador padrão automaticamente**
 - ✅ Suporte para Chrome, Edge, Firefox (em desenvolvimento)
 
-### 🔧 Instalação de Ferramentas
+### 🔧 Instalação de Ferramentas (44+ Apps)
 
 **Ferramentas de Desenvolvimento:**
 - Git, Python 3.13, Node.js LTS
 - Visual Studio Code, Cursor IDE
-- Notepad++, IntelliJ IDEA Community, PyCharm Community
-- Amazon Corretto JDK 8 & 17
+- Notepad++, Visual Studio 2022 Community
+- Inno Setup 6, Rust, Go
+- Java 21 (compatível com Minecraft)
+- Amazon Corretto 8, 17, 21
 - Postman, DBeaver, FileZilla, PuTTY
-- Yarn, pnpm, Composer
+- Yarn, pnpm, Bun, GitHub Desktop
 
 **Navegadores:**
 - Brave Browser (configurado como padrão)
 - Comet (Perplexity AI Browser)
 
 **Aplicativos Essenciais:**
-- Discord, Steam, WinRAR
-- Lightshot, AdsPower
-- System Informer, IObit Unlocker
-- MSI Afterburner, Logitech G Hub
-- JDownloader 2
+- Discord, Steam, WinRAR (ativado automaticamente)
+- Lightshot, JDownloader 2
+- System Informer
 
-**Runtimes:**
-- Visual C++ Redistributables (2005-2022)
-- .NET Framework 4.8
+### 🎮 Runtimes All-in-One (30+ Pacotes)
+
+**Visual C++ Redistributables:**
+- 2005, 2008, 2010, 2012, 2013, 2015-2022 (x86 + x64)
+
+**.NET Framework:**
+- 3.5, 4.5.2, 4.6.2, 4.7.2, 4.8, 4.8.1
+
+**.NET Runtimes (Modernos):**
+- 5.0, 6.0, 7.0, 8.0 (x64)
+
+**Gaming & Multimídia:**
 - DirectX End-User Runtime
+- XNA Framework 4.0
+- OpenAL
 
-### ⚡ Otimizações do Windows
+**Java:**
+- Java Runtime 8 & 21 LTS
 
-- ✅ Desempenho máximo (power plan)
-- ✅ Desativar aceleração do mouse
-- ✅ Otimizar efeitos visuais para performance
-- ✅ Desativar serviços desnecessários
-- ✅ Desativar telemetria e coleta de dados
-- ✅ Configurar File Explorer (mostrar extensões, arquivos ocultos)
-- ✅ Limpeza de arquivos temporários
-- ✅ Integração com Chris Titus Tech script (opção avançada)
+**Outros:**
+- Visual Studio Tools for Office Runtime
+
+### 🖥️ Detecção de GPU e Drivers
+
+- 🔍 **Detecção automática** de placas NVIDIA, AMD ou Intel
+- 📥 **Download e instalação** de drivers mais recentes
+- ⚡ **Otimização para gaming**
+
+### ⚙️ Otimizações do Windows (30+ Opções)
+
+**Performance:**
+- ⚡ Plano de energia (High Performance)
+- 🖱️ Desativar aceleração do mouse
+- 🎨 Otimizar efeitos visuais
+- 📁 Otimizar File Explorer
+- 🚀 Desativar programas de inicialização
+- 💾 Otimizar arquivo de paginação
+
+**Privacidade & Telemetria:**
+- 🔒 Desativar telemetria do Windows
+- 🚫 Desativar Cortana
+- 📊 Desativar Advertising ID
+- 📍 Desativar rastreamento de localização
+- 🔐 Desativar coleta de dados diagnósticos
+
+**Serviços Desnecessários:**
+- 🖨️ Print Spooler (se não usar impressora)
+- 📠 Fax Service
+- 🔍 Windows Search (se não usar)
+- 💿 Superfetch/SysMain
+- 🔄 Windows Update (usuários avançados)
+
+**Gaming:**
+- 🎮 Ativar Game Mode
+- 🎯 Desativar Game Bar
+- 📹 Desativar Game DVR
+- 🚀 Ativar Hardware-accelerated GPU Scheduling
+
+**Limpeza:**
+- 🧹 Limpar arquivos temporários
+- 🗑️ Esvaziar lixeira
+- 📦 Remover pasta Windows.old
+- 📥 Limpar pasta Downloads
+
+**Avançado:**
+- 💾 Criar ponto de restauração
+- ☁️ Desativar OneDrive
+- 💤 Desativar hibernação
+- 🔧 Executar Chris Titus Tech Script (externo)
 
 ### 🔑 Ativação do Windows
 
-- ✅ Ativação automática com 1 clique
-- ✅ Usa Microsoft Activation Scripts
-- ✅ Verificação de status de ativação
-- ✅ Método HWID (Hardware ID)
+- 🔐 **Ativação automática via Microsoft Activation Scripts (MAS)**
+- ✅ **Método HWID** (Hardware ID)
+- 🚀 **Sem interação do usuário** - seleção automática de opções
 
 ## 📥 Instalação
 
-### Método 1: Instalador (Recomendado)
+### Download
 
-1. Baixe `WindowsPostFormatSetup_v1.0.0.exe` da [última release](https://github.com/yourusername/windows-post-format-setup/releases)
-2. Execute como administrador
-3. Siga o wizard de instalação
-4. Inicie o aplicativo
+Baixe a versão mais recente na [página de Releases](https://github.com/theDAVIDL2/L2-Setup/releases).
 
-### Método 2: Build do Código-Fonte
+### Arquivos
 
-```bash
-# Clone o repositório
-git clone https://github.com/yourusername/windows-post-format-setup.git
-cd windows-post-format-setup
+- **L2Setup-Installer.exe** (~49 MB) - Instalador completo com instalação automática do .NET 8
+- **L2Setup.exe** (~166 MB) - Aplicativo standalone (requer .NET 8)
 
-# Restaurar dependências
-dotnet restore
+### Instalação Recomendada
 
-# Build
-dotnet build --configuration Release
-
-# Executar
-cd src/WindowsSetup.App/bin/Release/net8.0-windows
-./WindowsSetup.exe
-```
+1. Baixe `L2Setup-Installer.exe`
+2. Execute como Administrador
+3. O instalador detectará e instalará automaticamente o .NET 8 se necessário
+4. Siga o assistente de instalação
+5. Lance o **L2 Setup** e comece a usar!
 
 ## 🎯 Como Usar
 
-### ANTES de Formatar:
+### ⚠️ ANTES de Formatar
 
-1. **Abra o aplicativo**
-2. **Vá em "Browser Management"**
-3. **Clique em "Backup Brave Profile"**
-4. **Escolha onde salvar:**
-   - Pasta local
-   - USB drive (recomendado)
-   - OneDrive/Dropbox
-5. **Aguarde a conclusão** (geralmente 1-5 minutos)
-6. **Confirme** que o backup foi criado
+1. Abra o **L2 Setup**
+2. Vá para **Browser Management**
+3. Clique em **"Backup Brave Profile"**
+4. Salve em USB, cloud ou outro local seguro
 
-### DEPOIS de Formatar:
+### ✅ DEPOIS de Formatar
 
-1. **Instale o Windows Setup Tool**
-2. **Execute como administrador**
-
-3. **Instalar Ferramentas:**
-   - Clique em "Install Essentials" (Git, Python, Node, VS Code, Brave)
-   - OU "Install All Tools" para instalação completa (~40-60 min)
-
-4. **Restaurar Profile do Brave:**
-   - Vá em "Browser Management"
-   - Clique em "Restore Brave Profile"
-   - Selecione o backup (detectado automaticamente se em USB)
-   - Aguarde a restauração
-
-5. **Otimizar Windows:**
-   - Vá em "System Optimization"
+1. Instale o **L2 Setup** (usando o instalador)
+2. Execute o aplicativo (sempre como Administrador)
+3. **Quick Setup:**
+   - Clique em "Install All Tools" para instalar todas as 44+ ferramentas
+   - Clique em "Install GPU Drivers" para drivers da placa de vídeo
+   - Clique em "Install All Runtimes" para todos os 30+ runtimes
+4. **Custom Selection:**
+   - Selecione ferramentas específicas para instalar
+   - Use "Select All", "Deselect All" ou escolha manualmente
+5. **Browser Management:**
+   - Clique em "Restore Brave Profile" e selecione seu backup
+   - Clique em "Set as Default" para configurar Brave como padrão
+6. **Windows Optimization:**
+   - Clique em "Customize & Apply Optimizations"
+   - Selecione as otimizações desejadas por categoria
+   - Use presets: "Select All", "Deselect All", "Recommended"
    - Clique em "Apply Optimizations"
-   - Um restore point será criado automaticamente
+7. **Windows Activation:**
+   - Clique em "Activate Windows" para ativação automática
+   - Aguarde o processo (MAS será executado automaticamente)
 
-6. **Ativar Windows (opcional):**
-   - Vá em "Windows Activation"
-   - Clique em "Activate Windows"
-   - Aguarde o processo automático
+## 🛠️ Para Desenvolvedores
 
-7. **Reinicie o PC** para aplicar todas as mudanças
-
-## ⏱️ Tempo Estimado
-
-| Etapa | Tempo |
-|-------|-------|
-| Download de ferramentas | 15-30 min |
-| Instalação | 20-40 min |
-| Restore de browser | 2-5 min |
-| Otimizações | 2-5 min |
-| **Total** | **~40-80 min** |
-
-**vs ~3-4 horas manualmente** ✅
-
-## 🛠️ Tecnologias
-
-- **C# .NET 8** - Framework principal
-- **WPF** (Windows Presentation Foundation) - Interface gráfica
-- **Material Design in XAML** - Design moderno
-- **Inno Setup** - Criação do instalador
-- **Winget** - Gerenciador de pacotes Windows
-- **SharpCompress** - Compressão de arquivos
-
-## 📦 Requisitos
+### Requisitos
 
 - Windows 10/11 (64-bit)
-- .NET 8 Runtime (instalado automaticamente)
-- Privilégios de Administrador
-- Conexão com Internet
-
-## 📸 Screenshots
-
-_Screenshots serão adicionados em breve_
-
-## 🔧 Desenvolvimento
-
-### Requisitos para Desenvolvimento
-
-- Visual Studio 2022 ou superior
 - .NET 8 SDK
-- Inno Setup (para criar instalador)
+- Visual Studio 2022 Community (ou superior) com workload ".NET desktop development"
+- Inno Setup 6 (para criar o instalador)
 
-### Estrutura do Projeto
-
-```
-windows-post-format-setup/
-├── src/
-│   └── WindowsSetup.App/        # Aplicativo WPF principal
-│       ├── Services/            # Lógica de negócio
-│       ├── Models/              # Modelos de dados
-│       ├── Utils/               # Utilitários
-│       ├── MainWindow.xaml      # Interface principal
-│       └── AppSettings.json     # Configurações
-├── assets/                      # Recursos (ícones)
-├── docs/                        # Documentação
-├── .github/workflows/           # CI/CD
-└── README.md
-```
-
-### Compilar
+### Compilação
 
 ```bash
-# Debug
-dotnet build
+# Clone o repositório
+git clone https://github.com/theDAVIDL2/L2-Setup.git
+cd L2-Setup
 
-# Release
-dotnet build --configuration Release
+# Restaurar dependências
+dotnet restore src/WindowsSetup.App/WindowsSetup.App.csproj
 
-# Publicar
-dotnet publish -c Release -r win-x64 --self-contained false
+# Compilar (Release)
+dotnet publish src/WindowsSetup.App/WindowsSetup.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o Release
 
-# Criar instalador (requer Inno Setup instalado)
+# Criar instalador (requer Inno Setup 6)
 iscc setup.iss
 ```
 
+- **Output:** `Release/L2Setup-Installer.exe`
+
+### Release Manager
+
+Use o `release-manager.bat` para automatizar builds e releases:
+
+```batch
+release-manager.bat
+```
+
+Opções:
+1. 📤 Quick Push (Git Add + Commit + Push)
+2. 🏗️  Build Project (Debug)
+3. 📦 Build Release (Production)
+4. 🚀 Create Installer
+5. ✨ Create GitHub Release
+6. ⚙️  Edit Configuration
+7. 📝 View Release Guide
+
+## 🔧 Tecnologias Utilizadas
+
+- **C# + WPF** (.NET 8)
+- **Material Design in XAML** (UI Framework)
+- **Winget** (Package Manager)
+- **Inno Setup** (Installer)
+- **PowerShell** (Windows Activation)
+- **SharpCompress** (Backup/Restore)
+- **System.Management** (GPU Detection)
+
+## 📁 Estrutura do Projeto
+
+```
+L2-Setup/
+├── src/
+│   └── WindowsSetup.App/         # Aplicação WPF principal
+│       ├── Models/                # Modelos de dados
+│       ├── Services/              # Lógica de negócio
+│       ├── Utils/                 # Utilitários
+│       ├── Views/                 # Janelas adicionais
+│       ├── MainWindow.xaml        # Janela principal
+│       └── App.xaml               # Application resources
+├── assets/                        # Ícones e recursos
+│   ├── icon.ico                  # Ícone da aplicação
+│   └── RunAsAdmin.bat            # Wrapper para elevação UAC
+├── Release/                       # Output da compilação
+│   ├── L2Setup.exe               # Executável principal
+│   └── L2Setup-Installer.exe     # Instalador Inno Setup
+├── setup.iss                      # Script Inno Setup
+├── release-config.json            # Configuração do release manager
+├── release-manager.bat            # Script de automação
+├── README.md                      # Documentação
+├── CHANGELOG.md                   # Histórico de mudanças
+├── LICENSE                        # Licença MIT
+└── .gitignore                     # Git ignore
+```
+
+## 🚨 Troubleshooting
+
+### Erro 740: The requested operation requires elevation
+
+**Solução:** O aplicativo sempre solicita permissões de administrador via UAC. Se o erro persistir:
+1. Clique com botão direito no atalho
+2. Selecione "Executar como administrador"
+
+### .NET 8 Runtime não detectado
+
+**Solução:** Use o instalador `L2Setup-Installer.exe` que instala automaticamente o .NET 8.
+
+### Winget não disponível
+
+**Solução:** 
+- Windows 10: Instale **App Installer** da Microsoft Store
+- Windows 11: Já vem pré-instalado
+
+### Falha ao instalar ferramentas
+
+**Solução:**
+- Verifique conexão com a internet
+- Execute como Administrador
+- Verifique logs na área de texto do aplicativo
+
 ## 🤝 Contribuindo
 
-Contribuições são muito bem-vindas! 
+Contribuições são bem-vindas! Sinta-se à vontade para abrir uma Pull Request para **L2 Setup**.
 
 1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Add: Minha nova feature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra uma Pull Request
 
-**Veja [CONTRIBUTING.md](docs/CONTRIBUTING.md) para mais detalhes.**
-
-## ⚠️ Disclaimers Importantes
-
-### Sobre Backup de Dados
-- **SEMPRE faça backup** dos seus dados importantes antes de formatar
-- Este tool facilita o backup do navegador, mas você é responsável por seus dados
-- Teste a restauração do backup antes de formatar
-
-### Sobre Ativação do Windows
-- Este tool usa Microsoft Activation Scripts (código aberto)
-- **Use apenas se você possui uma licença válida do Windows**
-- Não nos responsabilizamos pelo uso indevido
-- Método recomendado oficial: comprar chave de produto Microsoft
-
-### Sobre Otimizações
-- Algumas otimizações alteram configurações do sistema
-- Um restore point é criado automaticamente
-- Você pode reverter alterações via System Restore
-- Use por sua conta e risco
-
-### Sobre Privilégios de Administrador
-- Este aplicativo requer privilégios de administrador
-- Necessário para instalar software e modificar configurações do sistema
-- Revise o código-fonte se tiver dúvidas sobre segurança
-
-## 📝 Licença
+## 📄 Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## 🙏 Agradecimentos
+## 🌟 Roadmap
 
-- [Chris Titus Tech](https://christitus.com/) - Windows optimization script
-- [Microsoft Activation Scripts](https://github.com/massgravel/Microsoft-Activation-Scripts) - Activation tools
-- [Material Design in XAML](http://materialdesigninxaml.net/) - Beautiful UI components
-- Comunidade open source do Windows
-
-## 📞 Suporte
-
-- 🐛 [Reportar Bug](https://github.com/yourusername/windows-post-format-setup/issues)
-- 💡 [Sugerir Feature](https://github.com/yourusername/windows-post-format-setup/issues)
-- 📖 [Documentação Completa](docs/)
-- ⭐ **Deixe uma estrela se este projeto foi útil!**
-
-## 🗺️ Roadmap
-
-- [x] Backup/Restore de perfil Brave
-- [x] Instalação automática de ferramentas
-- [x] Otimizações do Windows
-- [x] Ativação automática do Windows
-- [ ] Interface para seleção customizada de ferramentas
-- [ ] Suporte para Firefox e outros navegadores
-- [ ] Backup na nuvem integrado
-- [ ] Perfis de instalação (Dev, Gaming, Office)
-- [ ] Modo silencioso (CLI)
-- [ ] Agendamento de backups automáticos
-- [ ] Suporte para múltiplos idiomas
-
-## 📊 Estatísticas
-
-- **Ferramentas suportadas:** 30+
-- **Tempo economizado:** ~3 horas por formatação
-- **Linhas de código:** ~3,500+
-- **Testes:** Em desenvolvimento
+- [ ] Suporte para backup/restore de Chrome, Edge, Firefox
+- [ ] Interface multilíngue (EN, PT-BR, ES)
+- [ ] Perfis customizáveis de instalação
+- [ ] Integração com cloud storage (Google Drive, OneDrive)
+- [ ] Auto-update do aplicativo
+- [ ] Modo portable (sem instalação)
+- [ ] Estatísticas de uso e tempo economizado
 
 ---
 
-**Desenvolvido com ❤️ para a comunidade Windows**
+**L2 Setup - Built with ❤️ by L2 for Windows automation**
 
-```
-  _       ___           __                   ____           __               ______            __
- | |     / (_)___  ____/ /___ _      _______/ __ \____  ___/ /_     ____   / ____/___  ___  / /
- | | /| / / / __ \/ __  / __ \ | /| / / ___/ /_/ / __ \/ __  (_)   / __ \ / /_  / __ \/ _ \/ / 
- | |/ |/ / / / / / /_/ / /_/ / |/ |/ (__  ) ____/ /_/ / /_/ /     / /_/ // __/ / /_/ /  __/_/  
- |__/|__/_/_/ /_/\__,_/\____/|__/|__/____/_/    \____/\__,_(_)    \____//_/    \____/\___(_)   
-                                                                                                 
-```
-
-**⚡ Formate com confiança. Restaure com rapidez. ⚡**
-
+**Repository:** https://github.com/theDAVIDL2/L2-Setup
