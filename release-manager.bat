@@ -364,20 +364,69 @@ echo.
 :: Step 3: Push
 echo [3/3] 🚀 Pushing to remote...
 call :LOG "Pushing to origin %CURRENT_BRANCH%"
-git push origin %CURRENT_BRANCH%
+git push origin %CURRENT_BRANCH% 2>"%TEMP_DIR%\push_error.txt"
 if errorlevel 1 (
-    call :LOG "ERROR: Push failed, trying with --set-upstream"
-    echo    ❌ Push failed!
-    echo.
-    echo 💡 Trying with --set-upstream flag...
-    git push --set-upstream origin %CURRENT_BRANCH%
-    if errorlevel 1 (
-        call :LOG "ERROR: Push failed completely"
-        echo    ❌ Still failed. Please check your git configuration.
-        pause
-        goto MENU
+    call :LOG "ERROR: Push failed"
+    
+    :: Check if error is due to remote having newer changes
+    findstr /i "fetch first" "%TEMP_DIR%\push_error.txt" >nul
+    if !errorlevel! equ 0 (
+        echo    ⚠️  Push rejected - remote has newer changes!
+        echo.
+        set /p pull_rebase="Pull and rebase your changes? (Y/N): "
+        if /i "!pull_rebase!"=="Y" (
+            echo.
+            echo    🔄 Pulling with rebase...
+            git pull --rebase origin %CURRENT_BRANCH%
+            if errorlevel 1 (
+                call :LOG "ERROR: Rebase failed"
+                echo    ❌ Rebase failed! Please resolve conflicts manually.
+                echo.
+                echo 💡 To resolve:
+                echo    1. Fix conflicts in the files
+                echo    2. git add .
+                echo    3. git rebase --continue
+                echo    4. Run this script again
+                echo.
+                pause
+                goto MENU
+            )
+            echo       ✅ Rebase successful
+            echo.
+            echo    🚀 Retrying push...
+            git push origin %CURRENT_BRANCH%
+            if errorlevel 1 (
+                call :LOG "ERROR: Push failed after rebase"
+                echo    ❌ Push still failed! Check your git configuration.
+                pause
+                goto MENU
+            )
+            call :LOG "Push successful after rebase"
+            echo       ✅ Push successful!
+        ) else (
+            echo    ❌ Push cancelled.
+            pause
+            goto MENU
+        )
+    ) else (
+        :: Try with --set-upstream for new branches
+        echo    ⚠️  Push failed, trying with --set-upstream...
+        git push --set-upstream origin %CURRENT_BRANCH%
+        if errorlevel 1 (
+            call :LOG "ERROR: Push failed completely"
+            echo    ❌ Still failed!
+            echo.
+            echo 💡 Possible reasons:
+            echo    • Network issue
+            echo    • Authentication problem
+            echo    • Insufficient permissions
+            echo    • Remote repository not accessible
+            echo.
+            pause
+            goto MENU
+        )
+        echo       ✅ Push successful with upstream!
     )
-    echo    ✅ Push successful with upstream!
 ) else (
     echo      ✅ Push completed successfully
 )
@@ -668,12 +717,55 @@ echo [4/4] 📤 Pushing to GitHub...
 call :LOG "Committing release: %version%"
 git add .
 git commit -m "release: version %version%"
-git push origin %DEFAULT_BRANCH%
 if errorlevel 1 (
-    git push --set-upstream origin %DEFAULT_BRANCH%
+    echo      ⚠️  Nothing to commit
+) else (
+    git push origin %DEFAULT_BRANCH% 2>"%TEMP_DIR%\push_error.txt"
+    if errorlevel 1 (
+        call :LOG "ERROR: Push failed"
+        
+        :: Check if error is due to remote having newer changes
+        findstr /i "fetch first" "%TEMP_DIR%\push_error.txt" >nul
+        if !errorlevel! equ 0 (
+            echo      ⚠️  Push rejected - remote has newer changes!
+            echo.
+            set /p pull_rebase="      Pull and rebase? (Y/N): "
+            if /i "!pull_rebase!"=="Y" (
+                echo      🔄 Pulling with rebase...
+                git pull --rebase origin %DEFAULT_BRANCH%
+                if errorlevel 1 (
+                    call :LOG "ERROR: Rebase failed in full release"
+                    echo      ❌ Rebase failed!
+                    pause
+                    goto MENU
+                )
+                echo      ✅ Rebase successful
+                echo      🚀 Retrying push...
+                git push origin %DEFAULT_BRANCH%
+                if errorlevel 1 (
+                    call :LOG "ERROR: Push failed after rebase"
+                    echo      ❌ Push failed!
+                    pause
+                    goto MENU
+                )
+            ) else (
+                echo      ❌ Push cancelled
+                pause
+                goto MENU
+            )
+        ) else (
+            git push --set-upstream origin %DEFAULT_BRANCH%
+            if errorlevel 1 (
+                call :LOG "ERROR: Push failed completely"
+                echo      ❌ Push failed!
+                pause
+                goto MENU
+            )
+        )
+    )
+    call :LOG "Pushed to GitHub"
+    echo      ✅ Pushed to GitHub
 )
-call :LOG "Pushed to GitHub"
-echo      ✅ Pushed to GitHub
 echo.
 
 echo ╔════════════════════════════════════════════════════════════╗
@@ -744,14 +836,54 @@ echo.
 
 echo 📤 Pushing tag to GitHub...
 call :LOG "Pushing tag to GitHub"
-git push origin "%tag_version%"
+git push origin "%tag_version%" 2>"%TEMP_DIR%\release_tag_error.txt"
 if errorlevel 1 (
     call :LOG "ERROR: Failed to push tag"
     echo ❌ Failed to push tag!
-    pause
-    goto MENU
+    echo.
+    
+    :: Check if remote has newer changes
+    findstr /i "fetch first\|remote contains" "%TEMP_DIR%\release_tag_error.txt" >nul
+    if !errorlevel! equ 0 (
+        echo 💡 Remote has newer changes.
+        echo.
+        set /p pull_and_retry="Pull changes and retry? (Y/N): "
+        if /i "!pull_and_retry!"=="Y" (
+            for /f "usebackq delims=" %%i in (`git rev-parse --abbrev-ref HEAD`) do set "curr_branch=%%i"
+            echo 🔄 Pulling changes...
+            git pull --rebase origin !curr_branch!
+            if errorlevel 1 (
+                echo ❌ Pull failed!
+                git tag -d "%tag_version%" >nul 2>&1
+                pause
+                goto MENU
+            )
+            echo 🚀 Retrying tag push...
+            git push origin "%tag_version%"
+            if errorlevel 1 (
+                echo ❌ Push still failed!
+                git tag -d "%tag_version%" >nul 2>&1
+                pause
+                goto MENU
+            )
+            echo    ✅ Tag pushed successfully!
+        ) else (
+            git tag -d "%tag_version%" >nul 2>&1
+            pause
+            goto MENU
+        )
+    ) else (
+        echo 💡 Possible reasons:
+        echo    • Tag already exists remotely
+        echo    • Network or authentication issue
+        echo.
+        git tag -d "%tag_version%" >nul 2>&1
+        pause
+        goto MENU
+    )
+) else (
+    echo    ✅ Tag pushed
 )
-echo    ✅ Tag pushed
 echo.
 
 echo ╔════════════════════════════════════════════════════════════╗
@@ -840,11 +972,48 @@ if errorlevel 1 (
             goto MENU
         )
         
-        git push origin %current_branch%
-        if errorlevel 1 (
-            echo ❌ Push failed!
-            pause
-            goto MENU
+        git push origin %current_branch% 2>&1 | find /i "fetch first" >nul
+        if !errorlevel! equ 0 (
+            echo ⚠️  Push rejected - remote has newer changes!
+            echo.
+            set /p pull_rebase="Pull and rebase your changes? (Y/N): "
+            if /i "!pull_rebase!"=="Y" (
+                echo.
+                echo 🔄 Pulling with rebase...
+                git pull --rebase origin %current_branch%
+                if errorlevel 1 (
+                    echo ❌ Rebase failed! Please resolve conflicts manually.
+                    pause
+                    goto MENU
+                )
+                echo    ✅ Rebase successful
+                echo.
+                echo 🚀 Retrying push...
+                git push origin %current_branch%
+                if errorlevel 1 (
+                    echo ❌ Push still failed! Check your git configuration.
+                    pause
+                    goto MENU
+                )
+                echo    ✅ Push successful!
+            ) else (
+                echo ❌ Push cancelled.
+                pause
+                goto MENU
+            )
+        ) else (
+            git push origin %current_branch%
+            if errorlevel 1 (
+                echo ❌ Push failed!
+                echo.
+                echo 💡 Possible reasons:
+                echo    • Network issue
+                echo    • Authentication problem
+                echo    • Remote has newer changes (try: git pull --rebase)
+                echo.
+                pause
+                goto MENU
+            )
         )
         echo ✅ Changes committed and pushed!
         echo.
@@ -906,21 +1075,74 @@ echo.
 
 echo 📤 Pushing tag to GitHub...
 call :LOG "Pushing tag to GitHub"
-git push origin "%tag_version%"
+git push origin "%tag_version%" 2>"%TEMP_DIR%\tag_push_error.txt"
 if errorlevel 1 (
     call :LOG "ERROR: Failed to push tag"
     echo ❌ Failed to push tag to GitHub!
     echo.
-    echo 💡 Possible reasons:
-    echo    • Network issue
-    echo    • Authentication problem
-    echo    • Remote tag already exists
+    
+    :: Check specific error types
+    findstr /i "fetch first\|remote contains" "%TEMP_DIR%\tag_push_error.txt" >nul
+    if !errorlevel! equ 0 (
+        echo 💡 Remote has newer changes that need to be pulled first.
+        echo.
+        set /p pull_first="Pull latest changes and retry? (Y/N): "
+        if /i "!pull_first!"=="Y" (
+            echo.
+            echo 🔄 Pulling latest changes...
+            git pull --rebase origin %current_branch%
+            if errorlevel 1 (
+                echo ❌ Pull failed! Please resolve conflicts manually.
+                git tag -d "%tag_version%" >nul 2>&1
+                pause
+                goto MENU
+            )
+            echo    ✅ Pull successful
+            echo.
+            echo 🚀 Retrying tag push...
+            git push origin "%tag_version%"
+            if errorlevel 1 (
+                echo ❌ Tag push still failed!
+                git tag -d "%tag_version%" >nul 2>&1
+                pause
+                goto MENU
+            )
+            echo    ✅ Tag pushed successfully!
+            goto TAG_PUSH_SUCCESS
+        )
+    )
+    
+    findstr /i "already exists" "%TEMP_DIR%\tag_push_error.txt" >nul
+    if !errorlevel! equ 0 (
+        echo 💡 Tag already exists on remote.
+        echo.
+        set /p force_tag="Force push tag? (Y/N): "
+        if /i "!force_tag!"=="Y" (
+            git push origin "%tag_version%" --force
+            if errorlevel 1 (
+                echo ❌ Force push failed!
+                git tag -d "%tag_version%" >nul 2>&1
+                pause
+                goto MENU
+            )
+            echo    ✅ Tag force pushed!
+            goto TAG_PUSH_SUCCESS
+        )
+    ) else (
+        echo 💡 Possible reasons:
+        echo    • Network issue
+        echo    • Authentication problem
+        echo    • Insufficient permissions
+    )
+    
     echo.
     echo Cleaning up local tag...
     git tag -d "%tag_version%" >nul 2>&1
     pause
     goto MENU
 )
+
+:TAG_PUSH_SUCCESS
 
 call :LOG "Tag pushed successfully - GitHub Actions triggered"
 echo    ✅ Tag pushed successfully!
