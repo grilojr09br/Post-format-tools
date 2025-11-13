@@ -56,7 +56,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR-USERNAME/L2-Setup.git
+git clone https://github.com/theDAVIDL2/L2-Setup.git
 cd L2-Setup
 
 # Add upstream remote
