@@ -222,13 +222,13 @@ namespace WindowsSetup.App.Services
         private async Task EmptyRecycleBin()
         {
             _logger.LogInfo("Emptying Recycle Bin...");
-            await _commandRunner.RunCommandAsync("rd", "/s /q %systemdrive%\\$Recycle.Bin");
+            await _commandRunner.RunCommandAsync("cmd.exe", "/c rd /s /q %systemdrive%\\$Recycle.Bin");
         }
 
         private async Task DeleteWindowsOld()
         {
             _logger.LogInfo("Deleting Windows.old folder...");
-            await _commandRunner.RunCommandAsync("rd", "/s /q %systemdrive%\\Windows.old");
+            await _commandRunner.RunCommandAsync("cmd.exe", "/c rd /s /q %systemdrive%\\Windows.old");
         }
 
         private async Task CleanDownloads()

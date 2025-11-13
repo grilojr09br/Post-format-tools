@@ -32,7 +32,6 @@ namespace WindowsSetup.App.Services
                 _logger.LogInfo("   3. ⚠️ If auto-selection fails, YOU MUST press '1' + ENTER");
                 _logger.LogInfo("   4. Wait for activation to complete");
                 _logger.LogInfo("");
-                _logger.LogWarning("⏱️ The process may take 30-60 seconds...");
                 _logger.LogWarning("👀 WATCH THE CMD WINDOW THAT WILL APPEAR!");
                 _logger.LogInfo("═══════════════════════════════════════════════════════════");
                 _logger.LogInfo("");
@@ -73,7 +72,7 @@ pause >nul
                 var batPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "L2Setup_WindowsActivation.bat");
                 await System.IO.File.WriteAllTextAsync(batPath, batContent);
 
-                _logger.LogInfo("⏳ Starting activation script...");
+                _logger.LogInfo("🚀 Starting activation script...");
                 _logger.LogInfo("");
                 _logger.LogWarning("⚠️ IMPORTANT INSTRUCTIONS:");
                 _logger.LogInfo("   → A CMD window will appear");
@@ -102,7 +101,6 @@ pause >nul
                 _logger.LogSuccess("✅ Activation window launched!");
                 _logger.LogInfo("📝 The CMD window is now running...");
                 _logger.LogInfo("");
-                _logger.LogInfo("⏱️ Waiting for activation to complete...");
                 _logger.LogInfo("   (This process runs in a separate window)");
                 _logger.LogInfo("");
                 _logger.LogWarning("👉 Remember: Press '1' + ENTER if you see a menu!");
@@ -126,8 +124,6 @@ pause >nul
                         _logger.LogInfo("   1. Click 'Check Status' button below to verify");
                         _logger.LogInfo("   2. If not activated, check the CMD output for errors");
                         _logger.LogInfo("   3. You may need to try again or use manual activation");
-                        _logger.LogInfo("");
-                        _logger.LogSuccess("💡 TIP: Activation can take a few minutes to reflect in the system");
                     }
                     catch (Exception ex)
                     {

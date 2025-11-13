@@ -152,7 +152,7 @@ namespace WindowsSetup.App
             if (_toolInstaller == null) return;
 
             var result = MessageBox.Show(
-                "This will install 44+ tools. This may take 40-60 minutes.\nContinue?",
+                "This will install 44+ tools.\nContinue?",
                 "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -203,7 +203,7 @@ namespace WindowsSetup.App
                 "• .NET Runtimes (5.0-8.0)\n" +
                 "• DirectX, XNA, OpenAL\n" +
                 "• Java 8 & 21\n\n" +
-                "This may take 30-60 minutes.\nContinue?",
+                "Continue?",
                 "Install All Runtimes", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -267,7 +267,7 @@ namespace WindowsSetup.App
             }
 
             var result = MessageBox.Show(
-                $"Install {selectedTools.Count} selected tools?\nThis may take some time.",
+                $"Install {selectedTools.Count} selected tools?",
                 "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
