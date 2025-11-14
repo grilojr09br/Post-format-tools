@@ -12,7 +12,9 @@
 **Save hours of post-format setup with automated tool installation, browser profile restoration, and 50+ Windows optimizations!**
 
 [📥 Download Latest Release](https://github.com/theDAVIDL2/L2-Setup/releases) • [📖 Documentation](docs/) • [🐛 Report Bug](https://github.com/theDAVIDL2/L2-Setup/issues) • [💡 Request Feature](https://github.com/theDAVIDL2/L2-Setup/issues)
+</div>
 
+<div align="left">
 KNOWN ISSUES: 
 
 • Installer isn't being capable of downloading NET 8 runtime, so the production exe is being attached to the releases
