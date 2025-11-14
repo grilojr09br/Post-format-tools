@@ -13,6 +13,11 @@
 
 [📥 Download Latest Release](https://github.com/theDAVIDL2/L2-Setup/releases) • [📖 Documentation](docs/) • [🐛 Report Bug](https://github.com/theDAVIDL2/L2-Setup/issues) • [💡 Request Feature](https://github.com/theDAVIDL2/L2-Setup/issues)
 
+KNOWN ISSUES: 
+• Installer isn't being capable of downloading NET 8 runtime, so the production exe is being attached to the releases
+• Process Hacker 2 installation process isn't working
+• Only Brave is suported for the browsers tab for now
+
 </div>
 
 ---
