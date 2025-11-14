@@ -305,23 +305,6 @@ KNOWN ISSUES:
 
 ---
 
-## 📸 Screenshots
-
-<div align="center">
-
-### Main Interface
-![Main Window](docs/images/main-window.png)
-
-### Optimization Settings
-![Optimization Window](docs/images/optimization-window.png)
-
-### Browser Backup
-![Browser Backup](docs/images/browser-backup.png)
-
-</div>
-
----
-
 ## 📥 Installation
 
 ### Option 1: Installer (Recommended)
